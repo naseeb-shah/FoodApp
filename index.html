@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food App</title>
+</head>
+<style>
+    #show{
+        border: 5px black solid;
+    
+        
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+    }
+    .meals{
+        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+      display: flex;
+      flex-direction: column;
+      margin: 2%;
+      
+      align-items: center;
+
+    }
+    .meals>img{
+        width: 90%;
+    
+    }
+    .meals>h1{
+        text-align: center;
+    }
+   .meals:hover{
+       width: 105%;
+   }
+
+select{
+    height: 50px;
+}
+option,label{
+    font-size: 40px;
+}
+
+
+   /* for nav */
+   o{
+margin: 0;
+
+        position: fixed;
+color: white;
+      
+       
+        width: max-content;
+        height: max-content;
+       
+    }
+   #fl{
+       border-radius: 5px;
+       position: absolute;
+       
+       position: fixed;
+      font-size: 25px;
+      background-color: inherit;
+   
+   }
+   #hide{
+       display: none;
+   }
+   #jack:hover #hide{
+       border-radius: 5px;
+       border: 1px black solid;
+       margin-left: 150px;
+    position: relative;
+    background-color: rgb(77, 65, 207);
+       display: block;
+   }
+   .row{
+            
+            display: flex;
+            justify-content: space-between;
+            background-color: red;
+        }
+        .row>h1{
+            color: white;
+            
+            font-size: 60px;
+
+        }
+        .meals
+</style>
+<body>
+    
+
+
+    <div class="o" id="fl"><a  id='jack'style="text-decoration: none; color: white;" href="https://www.linkedin.com/in/naseeb-khan-deenshah">Deen Shah Scion
+        <span id="hide">Contact on linkedin </span></a> </div>
+    <div id="det"></div>
+    
+        <div class="row">
+ <div></div>
+        <!-- <img  src="http://logok.org/wp-content/uploads/2014/06/McDonalds-logo.png" alt="Mcdlogo" width="200px" height="160px"> -->
+          <h1> Shah's    </h1>
+       <div></div>
+          <!-- <img src="http://logok.org/wp-content/uploads/2014/06/McDonalds-logo.png" alt="Mcdlogo" width="200px" height="160px"> -->
+        </div>
+        <div id="meals">
+
+            <label for="">Chose Meals Categories</label>    
+            <select name="" id="categories">
+    
+        
+    </select>
+    </div>
+    <div id="show"></div>
+    <script>
+        //   fetch data categories Form the sarver
+// check  is categories alredy in localStorage or not
+if(JSON.parse(localStorage.getItem('categories'))==null){
+
+
+        var data=fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
+.then((x)=>{return x.json()})
+.then((x)=>{localStorage.setItem('categories',JSON.stringify(x.categories))
+    dropdown(x.categories)})
+}else{
+    dropdown(JSON.parse(localStorage.getItem('categories')))
+}
+
+
+// for homepage items first time
+display("Beef")
+
+
+
+//  for create  dropdown using fetch daga
+function dropdown(x){
+    console.log(x)
+    var select=document.getElementById("categories")
+    x.forEach(element => {
+        var d= document.createElement("option")
+        d.innerText=element.strCategory
+        d.value=element.strCategory
+        // .addEventListener('change',()=>{console.log(d)})
+        select.appendChild(d)
+        
+    });
+    select.addEventListener('change',()=>{display(select.value)})
+}
+// catch meal by categories
+  async function display(x){
+    try{
+        var data =   await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${x}`)
+        .then((c)=>c.json())
+.then((c)=>displaymeals(c.meals))
+console.log("working")
+     }
+     catch (er){
+         console.log(er)
+        }
+        
+    }
+    function displaymeals(y){
+        // remove pre 
+        var pre= document.querySelectorAll('.meals')
+        console.log(pre)
+        pre.forEach(x=>x.remove())
+        
+
+
+
+
+        y.forEach((x)=>{
+            var div = document.createElement('div')
+        div.className="meals"
+        div.innerHTML=`<img src='${x.strMealThumb}' alt="" class="m">
+    <h1>${x.strMeal}</h1>`
+    document.getElementById('show').appendChild(div)
+        })
+        
+    }
+</script>
+</body>
+</html>
